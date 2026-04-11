@@ -11,16 +11,22 @@ export class MainScene extends Phaser.Scene {
   private startPanel?: Phaser.GameObjects.Image
   private guideText?: Phaser.GameObjects.Text
   private scoreText?: Phaser.GameObjects.Text
+  private heartImages: Phaser.GameObjects.Image[] = []
   private gameOverPanel?: Phaser.GameObjects.Container
   private isWingUp = true
   private isPlaying = false
   private isGameOver = false
+  private isInvulnerable = false
   private pipeScored = false
   private score = 0
+  private maxLives = 6
+  private lives = this.maxLives
   private groundSpeed = 220
   private pipeSpeed = 160
   private birdGravity = 900
   private flapVelocity = -340
+  private pipeGap = 180
+  private groundHeight = 80
 
   constructor() {
     super('MainScene')
@@ -33,6 +39,9 @@ export class MainScene extends Phaser.Scene {
     this.load.svg('pipe', '/assets/flappy/pipe.svg', { width: 96, height: 520 })
     this.load.svg('ground', '/assets/flappy/ground.svg', { width: 800, height: 120 })
     this.load.svg('start-panel', '/assets/flappy/start-panel.svg', { width: 360, height: 160 })
+    this.load.svg('heart-full', '/assets/flappy/heart-full.svg', { width: 48, height: 44 })
+    this.load.svg('heart-half', '/assets/flappy/heart-half.svg', { width: 48, height: 44 })
+    this.load.svg('heart-empty', '/assets/flappy/heart-empty.svg', { width: 48, height: 44 })
   }
 
   create(data: SceneStartData) {
@@ -46,8 +55,8 @@ export class MainScene extends Phaser.Scene {
     this.resetPipePair(width + 120)
 
     this.groundTiles = [
-      this.add.image(0, height - 120, 'ground').setOrigin(0, 0).setDisplaySize(width, 120),
-      this.add.image(width, height - 120, 'ground').setOrigin(0, 0).setDisplaySize(width, 120),
+      this.add.image(0, height - this.groundHeight, 'ground').setOrigin(0, 0).setDisplaySize(width, this.groundHeight),
+      this.add.image(width, height - this.groundHeight, 'ground').setOrigin(0, 0).setDisplaySize(width, this.groundHeight),
     ]
 
     this.bird = this.physics.add.image(220, height / 2, 'bird-up').setScale(1.35)
@@ -77,6 +86,12 @@ export class MainScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
 
+    this.heartImages = [
+      this.add.image(34, 32, 'heart-full'),
+      this.add.image(86, 32, 'heart-full'),
+      this.add.image(138, 32, 'heart-full'),
+    ]
+
     this.time.addEvent({
       delay: 160,
       loop: true,
@@ -103,7 +118,7 @@ export class MainScene extends Phaser.Scene {
     const groundMoveAmount = (this.groundSpeed * delta) / 1000
     const pipeMoveAmount = (this.pipeSpeed * delta) / 1000
     const { width } = this.scale
-    const groundTop = this.scale.height
+    const groundTop = this.scale.height - this.groundHeight
 
     this.groundTiles.forEach((ground) => {
       ground.x -= groundMoveAmount
@@ -127,7 +142,12 @@ export class MainScene extends Phaser.Scene {
       }
 
       if (this.bird.getBounds().bottom >= groundTop) {
-        this.endGame()
+        this.takeDamage()
+        return
+      }
+
+      if (this.isTouchingObstacle()) {
+        this.takeDamage()
         return
       }
 
@@ -163,9 +183,13 @@ export class MainScene extends Phaser.Scene {
   }
 
   private resetPipePair(x: number) {
+    const gapCenter = Phaser.Math.Between(170, 340)
+
     this.pipePair.forEach((pipe) => {
       pipe.x = x
     })
+    this.pipePair[0].y = gapCenter - this.pipeGap / 2 - this.pipePair[0].displayHeight / 2
+    this.pipePair[1].y = gapCenter + this.pipeGap / 2 + this.pipePair[1].displayHeight / 2
     this.pipeScored = false
   }
 
@@ -175,21 +199,76 @@ export class MainScene extends Phaser.Scene {
     this.scoreText?.setText(String(this.score))
   }
 
+  private takeDamage() {
+    if (!this.bird || this.isInvulnerable) {
+      return
+    }
+
+    this.lives -= 1
+    this.updateHearts()
+
+    if (this.lives <= 0) {
+      this.endGame()
+      return
+    }
+
+    this.isInvulnerable = true
+    this.bird.setVelocityY(this.flapVelocity * 0.6)
+    this.resetPipePair(this.scale.width + 120)
+
+    this.tweens.add({
+      targets: this.bird,
+      alpha: 0.35,
+      duration: 90,
+      yoyo: true,
+      repeat: 8,
+      onComplete: () => {
+        this.bird?.setAlpha(1)
+        this.isInvulnerable = false
+      },
+    })
+  }
+
+  private isTouchingObstacle() {
+    if (!this.bird || this.isInvulnerable) {
+      return false
+    }
+
+    const birdBounds = this.getShrunkBounds(this.bird, 18, 14)
+
+    return this.pipePair.some((pipe) => Phaser.Geom.Intersects.RectangleToRectangle(birdBounds, this.getShrunkBounds(pipe, 16, 18)))
+  }
+
+  private getShrunkBounds(gameObject: Phaser.GameObjects.Components.GetBounds, shrinkX: number, shrinkY: number) {
+    const bounds = gameObject.getBounds()
+    Phaser.Geom.Rectangle.Inflate(bounds, -shrinkX, -shrinkY)
+
+    return bounds
+  }
+
+  private updateHearts() {
+    this.heartImages.forEach((heart, index) => {
+      const lifeValue = this.lives - index * 2
+      const textureKey = lifeValue >= 2 ? 'heart-full' : lifeValue === 1 ? 'heart-half' : 'heart-empty'
+
+      heart.setTexture(textureKey)
+    })
+  }
+
   private endGame() {
     if (this.isGameOver || !this.bird) {
       return
     }
 
     const { width, height } = this.scale
-    const groundTop = height - 120
 
     this.isPlaying = false
     this.isGameOver = true
 
     this.bird.setVelocity(0, 0)
     this.bird.body.allowGravity = false
-    this.bird.setY(groundTop - this.bird.displayHeight / 2)
     this.bird.setAngle(0)
+    this.bird.setAlpha(1)
 
     this.gameOverPanel = this.add.container(width / 2, height / 2)
     this.gameOverPanel.add([
@@ -211,7 +290,7 @@ export class MainScene extends Phaser.Scene {
         })
         .setOrigin(0.5),
       this.add
-        .text(0, 62, 'Click or Space to restart', {
+        .text(0, 62, `Lives: ${this.lives}  |  Click or Space to restart`, {
           fontFamily: 'Verdana, sans-serif',
           fontSize: '18px',
           color: '#475569',
@@ -226,11 +305,14 @@ export class MainScene extends Phaser.Scene {
     this.startPanel = undefined
     this.guideText = undefined
     this.scoreText = undefined
+    this.heartImages = []
     this.gameOverPanel = undefined
     this.isWingUp = true
     this.isPlaying = false
     this.isGameOver = false
+    this.isInvulnerable = false
     this.pipeScored = false
     this.score = 0
+    this.lives = this.maxLives
   }
 }
