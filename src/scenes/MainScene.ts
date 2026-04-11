@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 export class MainScene extends Phaser.Scene {
-  private bird?: Phaser.GameObjects.Image
+  private bird?: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
   private groundTiles: Phaser.GameObjects.Image[] = []
   private pipePair: Phaser.GameObjects.Image[] = []
   private startPanel?: Phaser.GameObjects.Image
@@ -10,6 +10,8 @@ export class MainScene extends Phaser.Scene {
   private isPlaying = false
   private groundSpeed = 220
   private pipeSpeed = 160
+  private birdGravity = 900
+  private flapVelocity = -340
 
   constructor() {
     super('MainScene')
@@ -39,7 +41,9 @@ export class MainScene extends Phaser.Scene {
       this.add.image(width, height - 120, 'ground').setOrigin(0, 0).setDisplaySize(width, 120),
     ]
 
-    this.bird = this.add.image(220, height / 2, 'bird-up').setScale(1.35)
+    this.bird = this.physics.add.image(220, height / 2, 'bird-up').setScale(1.35)
+    this.bird.body.allowGravity = false
+    this.bird.setCollideWorldBounds(true)
 
     this.startPanel = this.add.image(width / 2, 130, 'start-panel')
 
@@ -62,8 +66,8 @@ export class MainScene extends Phaser.Scene {
       },
     })
 
-    this.input.on('pointerdown', () => this.startGame())
-    this.input.keyboard?.on('keydown-SPACE', () => this.startGame())
+    this.input.on('pointerdown', () => this.flap())
+    this.input.keyboard?.on('keydown-SPACE', () => this.flap())
   }
 
   update(_: number, delta: number) {
@@ -90,6 +94,10 @@ export class MainScene extends Phaser.Scene {
         pipe.x = width + 120
       }
     })
+
+    if (this.bird) {
+      this.bird.setAngle(Phaser.Math.Clamp(this.bird.body.velocity.y / 18, -22, 42))
+    }
   }
 
   private startGame() {
@@ -99,5 +107,18 @@ export class MainScene extends Phaser.Scene {
 
     this.isPlaying = true
     this.startPanel?.setVisible(false)
+    this.guideText?.setText('Click or press Space to flap')
+    if (this.bird) {
+      this.bird.body.allowGravity = true
+    }
+    this.bird?.setGravityY(this.birdGravity)
+  }
+
+  private flap() {
+    if (!this.isPlaying) {
+      this.startGame()
+    }
+
+    this.bird?.setVelocityY(this.flapVelocity)
   }
 }
