@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="54" viewBox="0 0 72 54" role="img" aria-label="Original yellow bird sprite with wings up">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <path d="M16 29C16 15 29 7 43 10C56 13 64 23 62 34C60 45 48 51 34 49C23 48 16 40 16 29Z" fill="url(#body)" stroke="#7c2d12" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M22 25C12 14 10 7 17 4C26 0 36 12 38 25C31 22 27 23 22 25Z" fill="#f97316" stroke="#7c2d12" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M59 27L70 22L68 31L70 39L58 35Z" fill="#fb923c" stroke="#7c2d12" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="46" cy="22" r="7" fill="#ffffff" stroke="#7c2d12" stroke-width="3"/>
+  <circle cx="48" cy="22" r="2.5" fill="#111827"/>
+  <path d="M31 39C38 43 46 42 52 36" fill="none" stroke="#92400e" stroke-width="3" stroke-linecap="round"/>
+</svg>

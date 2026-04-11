@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="160" viewBox="0 0 360 160" role="img" aria-label="Start panel for tap to fly">
+  <rect x="8" y="8" width="344" height="144" rx="24" fill="#fff7ed" stroke="#7c2d12" stroke-width="8"/>
+  <text x="180" y="62" text-anchor="middle" font-family="Verdana, sans-serif" font-size="34" font-weight="700" fill="#ea580c">FLAP QUEST</text>
+  <text x="180" y="106" text-anchor="middle" font-family="Verdana, sans-serif" font-size="22" font-weight="700" fill="#475569">SPACE / CLICK</text>
+  <text x="180" y="134" text-anchor="middle" font-family="Verdana, sans-serif" font-size="16" fill="#64748b">press to fly</text>
+</svg>

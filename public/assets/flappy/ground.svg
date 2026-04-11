@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="120" viewBox="0 0 800 120" role="img" aria-label="Scrolling grassy ground tile">
+  <rect width="800" height="120" fill="#b45309"/>
+  <rect width="800" height="28" fill="#65a30d"/>
+  <path d="M0 28H800" stroke="#365314" stroke-width="6"/>
+  <g fill="#84cc16">
+    <path d="M8 28L24 10L40 28Z"/>
+    <path d="M58 28L74 8L92 28Z"/>
+    <path d="M118 28L134 12L150 28Z"/>
+    <path d="M190 28L206 7L224 28Z"/>
+    <path d="M282 28L296 11L314 28Z"/>
+    <path d="M358 28L374 8L390 28Z"/>
+    <path d="M452 28L468 12L486 28Z"/>
+    <path d="M534 28L550 9L568 28Z"/>
+    <path d="M632 28L648 13L666 28Z"/>
+    <path d="M724 28L742 8L760 28Z"/>
+  </g>
+  <g fill="#92400e" opacity="0.72">
+    <circle cx="72" cy="62" r="8"/>
+    <circle cx="148" cy="90" r="10"/>
+    <circle cx="244" cy="68" r="7"/>
+    <circle cx="340" cy="102" r="8"/>
+    <circle cx="452" cy="76" r="9"/>
+    <circle cx="548" cy="96" r="7"/>
+    <circle cx="656" cy="68" r="8"/>
+    <circle cx="746" cy="92" r="10"/>
+  </g>
+</svg>

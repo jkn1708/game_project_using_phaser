@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Blue sky background with soft clouds">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="62%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#ecfeff"/>
+    </linearGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky)"/>
+  <circle cx="690" cy="86" r="42" fill="#fde68a" opacity="0.95"/>
+  <circle cx="690" cy="86" r="62" fill="#fde68a" opacity="0.18"/>
+  <g fill="#ffffff" opacity="0.9">
+    <ellipse cx="126" cy="112" rx="52" ry="24"/>
+    <ellipse cx="176" cy="108" rx="46" ry="28"/>
+    <ellipse cx="218" cy="118" rx="58" ry="23"/>
+    <ellipse cx="514" cy="176" rx="50" ry="24"/>
+    <ellipse cx="558" cy="168" rx="48" ry="30"/>
+    <ellipse cx="606" cy="180" rx="56" ry="22"/>
+    <ellipse cx="188" cy="300" rx="42" ry="19"/>
+    <ellipse cx="224" cy="292" rx="44" ry="25"/>
+    <ellipse cx="268" cy="302" rx="48" ry="20"/>
+  </g>
+  <rect y="378" width="800" height="96" fill="url(#haze)" opacity="0.6"/>
+  <path d="M0 458C92 432 154 440 232 466C314 494 380 492 468 456C572 414 666 430 800 470V600H0Z" fill="#86efac" opacity="0.35"/>
+</svg>
